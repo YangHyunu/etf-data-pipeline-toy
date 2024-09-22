@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETF Price Prediction</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">ETF Price Prediction</h1>
+        <div class="mt-3">
+            <h2>Prediction Result</h2>
+            <!-- 그래프 표시 -->
+            <img src="data:image/png;base64,{{ image }}" alt="ETF Prediction Graph" class="img-fluid">
+            
+            <!-- 예측 결과 테이블 -->
+            <table class="table table-striped mt-4">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Predicted Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for date, price in prediction.items() %}
+                    <tr>
+                        <td>{{ date }}</td>
+                        <td>{{ price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <a href="/predict_etf" class="btn btn-primary mt-3">Predict Another ETF</a>
+    </div>
+</body>
+</html>

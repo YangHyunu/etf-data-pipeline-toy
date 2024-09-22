@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+sqlalchemy
+mysql-connector-python
+yfinance
+pandas
+prophet
+dash
+requests
+plotly
