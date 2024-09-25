@@ -1,2 +1,32 @@
-# etf-data-pipeline-toy-
-A toy project for practicing data engineering concepts by building an ETF data pipeline with FastAPI, MySQL, and Prophet for price predictions.
+# ETF Data Pipeline Toy Project
+
+### **1. 프로젝트 설명 및 목적**
+
+- 이 프로젝트는 데이터 엔지니어링 개념을 연습하기 위한 토이 프로젝트입니다. FastAPI와 MySQL을 사용하여 ETF(상장지수펀드) 데이터를 수집, 저장, 예측하는 데이터 파이프라인을 구축하는 것을 목표로 합니다. 주요 목표는 일일 데이터 업데이트 시스템을 구현하고, Prophet 머신러닝 모델을 사용해 ETF 가격을 예측하는 것입니다.
+
+### **2. 개선 사항**
+
+- 프로젝트를 진행하며 **Docker**, **Redshift**, **Airflow**를 학습하고, 기존의 코드를 개선하여 데이터 파이프라인을 자동화하고 관리하는 서비스를 배포하는 프로젝트로 확장할 예정입니다.
+- 특히, **Docker**로 애플리케이션을 컨테이너화하여 일관된 개발 환경과 배포 환경을 구축하고, **Airflow**를 사용해 데이터 수집과 처리를 자동화하며, **Redshift**와 같은 데이터 웨어하우스를 사용하여 대규모 데이터 처리를 지원할 계획입니다.
+
+### **3. 성과**
+
+
+### **4. 현재의 기술 스택**
+
+- **FastAPI**: 백엔드 API 서버로 사용.
+- **MySQL**: 관계형 데이터베이스로 ETF 데이터를 저장.
+- **SQLAlchemy**: 데이터베이스와 상호작용을 위한 ORM(Object Relational Mapping).
+- **Prophet**: 시계열 데이터 예측을 위한 머신러닝 모델.
+
+기술 스택의 사용 이유:
+
+- Prophet: 간단하게 시계열 데이터를 예측할 수 있고 , 현재 프로젝트의 목적이  etf 예측의 정확성이나 최적화가 아니라, 데이터 파이프라인 구성 및 관리를 목적으로 하기 때문에 최대한 간단한 모델을 사용했습니다.
+
+### **5. 앞으로 추가될 스택 및 구조**
+
+- LSTM : 하이퍼 파라미터를 최적화 하고, 모델의 예측 성능을 더 높일 계획
+- **Docker**: 애플리케이션을 컨테이너화하여 일관된 환경에서 배포.
+- **Airflow**: 데이터 파이프라인을 자동화하여 일일 데이터 수집 및 처리를 스케줄링.
+- **Redshift**: 데이터 웨어하우스 솔루션으로, 대규모 데이터 분석 및 처리 지원.
+- **Grafana 또는 Tableau**: 시각화를 통해 예측 데이터를 대시보드로 제공할 계획.
