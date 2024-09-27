@@ -2,9 +2,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 # 데이터베이스 URL 환경 변수 (MySQL 사용)
-DATABASE_URL = os.getenv("DATABASE_URL", "mysql+mysqlconnector://root:LUNA.1998.1009@localhost/etf_db")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 # SQLAlchemy 데이터베이스 엔진 생성 (MySQL 연결)
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)

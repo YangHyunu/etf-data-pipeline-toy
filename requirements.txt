@@ -8,3 +8,5 @@ prophet
 dash
 requests
 plotly
+python-dotenv
+pandas-market-calendars

@@ -33,29 +33,29 @@ def on_startup():
         client.store_initial_data(etf_list)  # 초기 데이터 저장
     scheduler.start()
 
-# 매일 아침 데이터를 업데이트하는 작업 스케줄링
+# 매일 아침 데이터와 모델을 업데이트하는 작업 스케줄링
 def schedule_daily_update():
     with SessionLocal() as db:
         client = ETFClient(db)
         client.update_daily_data(etf_list)
-        for category, etfs in etf_list:
+        for category, etfs in etf_list.items():
             for etf_symbol in etfs:
                 df = get_etf_data_from_db(etf_symbol, db)
     print(f"스케줄러가 실행되었습니다: {datetime.now()}")
 # 스케줄러에 매일 아침 6시에 실행되는 작업 추가
 @app.on_event("startup")
 def start_scheduler():
-    scheduler.add_job(schedule_daily_update, 'cron',hour=6,minute=0)
+    scheduler.add_job(schedule_daily_update, 'cron',hour=14,minute=56)
 
 # GET 요청: ETF 심볼 입력 폼을 제공
-@app.get("/predict_etf", response_class=HTMLResponse)
+@app.get("/predict-etf", response_class=HTMLResponse)
 def get_etf_form(request: Request):
     return templates.TemplateResponse("predict_etf_form.html", {
         "request": request,
         "etf_list": etf_list  # etf_list 전달 추가
     })
 
-@app.post("/predict_etf", response_class=HTMLResponse)
+@app.post("/predict-etf", response_class=HTMLResponse)
 def predict_etf(request: Request, etf_symbol: str = Form(...), db: Session = Depends(get_db)):
 
     # 머신러닝 모델로 예측 수행
@@ -73,4 +73,10 @@ def predict_etf(request: Request, etf_symbol: str = Form(...), db: Session = Dep
         "symbol": etf_symbol,
         "prediction": predictions["prediction"],
         "image": image_base64
-    })
+    }) 
+    
+@app.post("/init-model")
+def init_model(etf_symbol:str,db:Session=Depends(get_db)):
+    
+    df = get_etf_data_from_db(etf_symbol,db)
+    return df

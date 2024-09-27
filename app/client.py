@@ -2,15 +2,21 @@ import yfinance as yf
 from sqlalchemy.orm import Session
 from .models import ETFData
 from datetime import timedelta
+import pandas as pd
+import pandas_market_calendars as mcal
 # ETF 데이터를 관리하는 클래스
 class ETFClient:
     def __init__(self, db: Session):
         self.db = db
     
-    # yfinance에서 데이터를 가져오는 메서드
-    def fetch_data(self, symbol: str,period:str ='5y'):
-        return yf.download(symbol, period=period)  # 과거 5년치 데이터
-    
+    def fetch_data(self, symbol: str, start=None, end=None, period: str = '5y'):
+        if start:
+            # 특정 날짜 범위의 데이터를 가져옴
+            return yf.download(symbol, start=start, end=end)
+        else:
+            # 기간에 따른 데이터를 가져옴
+            return yf.download(symbol, period=period)  # 과거 5년치 데이터
+        
     # 데이터를 데이터베이스에 저장하는 메서드
     def save_to_db(self, symbol: str, data,category:str):
         for date, row in data.iterrows():
@@ -45,6 +51,9 @@ class ETFClient:
 
     # 매일 데이터를 업데이트하는 메서드
     def update_daily_data(self, etf_list: dict):
+        # 뉴욕 증권거래소에서 시장의 거래일 정보를 읽어옴
+        nyse = mcal.get_calendar('NYSE')
+        
         for category, etfs in etf_list.items():
             for etf in etfs:
                 # 데이터베이스에서 가장 최신 날짜를 가져옴
@@ -53,8 +62,12 @@ class ETFClient:
 
                 # yfinance에서 마지막 업데이트 이후의 데이터를 가져옴
                 if last_date:
-                    start_date = last_date + timedelta(days=1)
-                    data = self.fetch_data(etf, period='1d', start=start_date.strftime('%Y-%m-%d'))
-                    if not data.empty:
-                        self.save_to_db(etf, data, category)
+                    schedule = nyse.valid_days(start_date = last_date + timedelta(days=1),end_date=pd.Timestamp.today())
+                    if not schedule.empty:
+                        start_date = schedule[0]
+                        data = self.fetch_data(etf,start=start_date.strftime('%Y-%m-%d'))
+                    else:
+                        print(f"No new trading days found for {etf} since {last_date}")
+                        continue
+                
     
