@@ -8,8 +8,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 앱 소스 복사
+# local 에 있는 소스파일들 복사해서 작업 디렉토리인 app 에 저장함 
+# gitignore에 있는 venv는 복사 안됌
 COPY . .
 
 # FastAPI 애플리케이션 실행
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app","--host", "0.0.0.0", "--port", "8000"]

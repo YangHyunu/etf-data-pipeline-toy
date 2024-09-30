@@ -10,3 +10,6 @@ requests
 plotly
 python-dotenv
 pandas-market-calendars
+apscheduler
+joblib
+python-multipart

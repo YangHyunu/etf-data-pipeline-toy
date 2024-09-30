@@ -42,6 +42,7 @@ def schedule_daily_update():
             for etf_symbol in etfs:
                 df = get_etf_data_from_db(etf_symbol, db)
     print(f"스케줄러가 실행되었습니다: {datetime.now()}")
+    
 # 스케줄러에 매일 아침 6시에 실행되는 작업 추가
 @app.on_event("startup")
 def start_scheduler():
@@ -74,9 +75,3 @@ def predict_etf(request: Request, etf_symbol: str = Form(...), db: Session = Dep
         "prediction": predictions["prediction"],
         "image": image_base64
     }) 
-    
-@app.post("/init-model")
-def init_model(etf_symbol:str,db:Session=Depends(get_db)):
-    
-    df = get_etf_data_from_db(etf_symbol,db)
-    return df

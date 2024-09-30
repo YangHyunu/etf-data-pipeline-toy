@@ -2,7 +2,6 @@ import datetime
 import pathlib
 import joblib
 from sqlalchemy.orm import Session
-import matplotlib.pyplot as plt
 import pandas as pd
 from .models import ETFData  # ETFData는 SQLAlchemy 모델
 import numpy as np
@@ -55,10 +54,6 @@ def apply_model_to_etf(etf_symbol:str,period=30):
     future = future[future['ds'].isin(schedule)]
     forecast = model.predict(future)
     fig = model.plot(forecast)
-    print(f"future['ds'] dtype: {future['ds'].dtype}")
-    print(f"schedule dtype: {schedule.dtype}")
-    print(f"future dates:\n{future['ds'].head()}")
-    print(f"schedule dates:\n{schedule}")
     # 예측 그래프를 버퍼에 저장
     buffer = BytesIO()
     fig.savefig(buffer, format='png', bbox_inches='tight')
