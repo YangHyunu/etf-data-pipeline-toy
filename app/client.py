@@ -1,6 +1,7 @@
 import yfinance as yf
 from sqlalchemy.orm import Session
 from .models import ETFData
+from .predictions import get_etf_data_from_db
 from datetime import timedelta
 import pandas as pd
 import pandas_market_calendars as mcal
@@ -66,8 +67,18 @@ class ETFClient:
                     if not schedule.empty:
                         start_date = schedule[0]
                         data = self.fetch_data(etf,start=start_date.strftime('%Y-%m-%d'))
+                        if not data.empty:
+                            self.save_to_db(etf,data,category)
                     else:
                         print(f"No new trading days found for {etf} since {last_date}")
                         continue
-                
-    
+                    
+    def update_model(self,etf_list: dict):
+        for categories, etfs in etf_list.items():
+            for etf in etfs:
+                try:
+                    get_etf_data_from_db(etf, self.db)
+                    print(f"Model for {etf} updated successfully.")
+                except Exception as e:
+                    print(f"Failed to update model for {etf}: {e}")
+        

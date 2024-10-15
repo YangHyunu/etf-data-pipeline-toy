@@ -1,35 +1,50 @@
-  version: '3.8'
+version: '3.8'
 
-  services:
-    db:
-      image: mysql:8.0
-      container_name: mysql_db
-      ports:
-        - "3306:3306"
-      env_file: .env  # 환경 변수를 .env 파일에서 로드
-      environment:
-        TZ: Asia/Seoul  # 타임존 설정
-      volumes:
-        - db_data:/var/lib/mysql
-      networks:
-        - backend
-      restart: always  # 예기치 않은 종료 시 자동 재시작
-      
-    web:
-      build: .
-      container_name: fastapi_app
-      ports:
-        - "8000:8000"
-      env_file: .env  # 환경 변수를 .env 파일에서 로드
-      depends_on:
-        - db
-      networks:
-        - backend
-      restart: always  # 예기치 않은 종료 시 자동 재시작
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    ports:
+      - "3306:3306"
+    env_file: .env # 환경 변수 파일을 로드
+    environment:
+      TZ: Asia/Seoul
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - backend
+    restart: always
 
-  volumes:
-    db_data:
-      driver: local
+  web:
+    build: .
+    container_name: fastapi_app
+    env_file: .env
+    expose:
+      - "8000"  # Nginx가 내부적으로 FastAPI에 접근할 수 있게 설정
+    depends_on:
+      - db
+    networks:
+      - backend
+    restart: always
 
-  networks:
-    backend:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"    # Nginx가 외부에서 80번 포트로 접근 가능
+      - "443:443"  # HTTPS 포트 (SSL 설정 시 필요)
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf  # Nginx 설정 파일을 상대 경로로 매핑
+      - ./nginx/html:/usr/share/nginx/html        # 정적 파일 서빙을 위한 디렉토리 매핑
+    depends_on:
+      - db
+    networks:
+      - backend
+    restart: always
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  backend:
